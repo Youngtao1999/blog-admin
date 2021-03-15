@@ -27,7 +27,7 @@ const Login = () => {
         spinning={isLoading}
       >
         <Card 
-          title="Young 博客管理系统"
+          title="博客管理系统"
           bordered
           style={{width: 450}}
         >
