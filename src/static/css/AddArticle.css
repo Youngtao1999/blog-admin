@@ -115,12 +115,13 @@
 }
 .right-button  {
   display: flex;
-  justify-content:flex-end;
+  justify-content: flex-start;
   margin-bottom: 1rem;
 }
 .right-button button {
-  margin-left: 2rem;
+  margin-right: 2rem;
   border-radius: 4px;
+  width: 30%;
 }
 .date-select {
   display: flex;

@@ -40,8 +40,10 @@ const Login = (props) => {
       data: loginData,
       withCredentials: true
     }).then(res => {
-      if(res.data.data === "登录成功") {
-        localStorage.setItem("openId", res.data.openId);
+      if(res.data.success) {
+        //  存储 token
+        sessionStorage.setItem("token", res.data.token);
+        console.log("token", sessionStorage.getItem("token"));
         props.history.push("/index");
         setIsLoading(false);
         clearTimeout(timer)
