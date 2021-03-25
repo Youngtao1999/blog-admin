@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { Layout, Menu, Breadcrumb } from 'antd';
+import { Route } from "react-router-dom"
 import {
   DesktopOutlined,
   PieChartOutlined,
@@ -7,6 +8,7 @@ import {
   TeamOutlined,
   UserOutlined,
 } from '@ant-design/icons';
+import AddArticle from "./AddArticle"
 import "../static/css/AdminIndex.css"
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -41,14 +43,15 @@ const AdminIndex = () => {
         </Menu>
       </Sider>
       <Layout className="site-layout">
-        <Header className="site-layout-background" style={{ padding: 0 }} />
         <Content style={{ margin: '0 16px' }}>
           <Breadcrumb style={{ margin: '16px 0' }}>
             <Breadcrumb.Item>后台管理系统</Breadcrumb.Item>
             <Breadcrumb.Item>工作台</Breadcrumb.Item>
           </Breadcrumb>
           <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
-            你好呀 markdown
+            <div>
+              <Route path="/index" exact component={AddArticle} />
+            </div>
           </div>
         </Content>
         <Footer style={{ textAlign: 'center' }}>Young + React + antd</Footer>

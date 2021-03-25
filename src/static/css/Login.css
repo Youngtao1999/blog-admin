@@ -14,5 +14,6 @@ body {
 }
 .card-button button {
   width: 10rem;
-  height: 2.5rem
+  height: 2.5rem;
+  border-radius: 6px;
 }

@@ -1,0 +1,133 @@
+.left-header {
+  margin-bottom: 1rem;
+}
+.markdown-content {
+  font-size: 16px !important;
+  max-height: 745px;
+}
+
+/* 文章 */
+.show-html {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  height: 745px;
+  background-color: #f0f0f0;
+  overflow: auto;
+  white-space:normal;
+	word-break:break-all;
+	word-wrap:break-word;
+}
+.show-html h1{
+  font-size:30px;
+}
+
+.show-html h2{
+  font-size:28px;
+  border-bottom: 1px solid #cbcbcb;
+}
+.show-html h3{
+  font-size:24px;
+}
+
+.show-html pre{
+  display: block;
+  background-color: #f0f0f0;
+  padding: 5px;
+  border-radius: 5px;
+}
+.show-html pre>code{
+  color: #000;
+  background-color: #f0f0f0;
+}
+.show-html code {
+  background-color: #fff5f5;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin: 0px 3px; 
+  color: #ff502c; 
+}
+.show-html blockquote {
+  border-left:4px solid #cbcbcb ;
+  padding: 5px 10px 5px 30px; 
+  background-color: #f8f8f8;
+}
+.show-html blockquote p {
+  margin-bottom: 0;
+}
+
+.introduce-html{
+  padding:10px;
+  border:1px solid #ddd;
+  border-radius: 5px;
+  font-size:16px;
+  background-color: #f0f0f0;
+  white-space:normal;
+	word-break:break-all;
+	word-wrap:break-word;
+}
+
+/* 简介 */
+.introduce-html {
+  margin-top: 1rem;
+}
+.introduce-html h1{
+  font-size:30px;
+}
+
+.introduce-html h2{
+  font-size:28px;
+  border-bottom: 1px solid #cbcbcb;
+}
+.introduce-html h3{
+  font-size:24px;
+}
+
+.introduce-html pre{
+  display: block;
+  background-color: #f0f0f0;
+  padding: 5px;
+  border-radius: 5px;
+}
+.introduce-html pre>code{
+  color: #000;
+  background-color: #f0f0f0;
+}
+.introduce-html code {
+  background-color: #fff5f5;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin: 0px 3px; 
+  color: #ff502c; 
+}
+.introduce-html blockquote {
+  border-left:4px solid #cbcbcb ;
+  padding: 5px 10px 5px 10px; 
+  background-color: #f8f8f8;
+}
+.introduce-html blockquote p {
+  margin-bottom: 0;
+}
+
+.right-content {
+  margin-left: 10px;
+}
+.right-button  {
+  display: flex;
+  justify-content:flex-end;
+  margin-bottom: 1rem;
+}
+.right-button button {
+  margin-left: 2rem;
+  border-radius: 4px;
+}
+.date-select {
+  display: flex;
+}
+.ant-select-selector {
+  margin-left: 1rem;
+}
+.article-intro {
+  margin-top: 1rem;
+}
