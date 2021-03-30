@@ -1,9 +1,24 @@
 .logo {
   height: 32px;
-  margin: 16px;
-  background: rgba(255, 255, 255, 0.2);
+  background: #fff;
 }
 
 .site-layout .site-layout-background {
   background: #fff;
+}
+
+.head-light {
+  padding: 10px 10px 10px 12px;
+  font-weight: bold;
+  font-size: 18px;
+}
+.head-dark {
+  padding: 10px 10px 10px 12px;
+  font-weight: bold;
+  font-size: 18px;
+  color: #fff;
+}
+
+.ant-switch {
+  margin-left: 10px;
 }

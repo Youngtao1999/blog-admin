@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Layout, Menu, Breadcrumb } from 'antd';
+import { Layout, Menu, Breadcrumb, Switch } from 'antd';
 import { Route } from "react-router-dom"
 import {
   DesktopOutlined,
@@ -9,33 +9,68 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 import AddArticle from "./AddArticle"
+import ArticleList from "./ArticleList";
 import "../static/css/AdminIndex.css"
 
-const { Header, Content, Footer, Sider } = Layout;
-const { SubMenu } = Menu;
 
-const AdminIndex = () => {
+const AdminIndex = (props) => {
+  const { Header, Content, Footer, Sider } = Layout;
+  const { SubMenu } = Menu;
+
   const [collapsed, setCollapsed] = useState(false);
+  const [theme, setTheme] = useState("light");
+  const [headclass, setHeadclass] = useState("head-light");
 
   const onCollapse = collapsed => {
-    console.log(collapsed);
     setCollapsed(collapsed);
   };
 
+  const handleClickMenu = (e) => {
+    if(e.key === "addArticle") {
+      props.history.push("/index/add");
+    } else if(e.key === "Articlelist") {
+      props.history.push("/index/list");
+    }
+  }
+
+  const changeTheme = (value) => {
+    setTheme(value ? 'dark' : 'light')
+    setHeadclass(value ? 'head-dark' : 'head-light')
+  }
+
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Sider collapsible collapsed={collapsed} onCollapse={onCollapse}>
-        <div className="logo" />
-        <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
+    <Layout>
+      <Sider 
+        collapsible 
+        collapsed={collapsed} 
+        onCollapse={onCollapse} 
+        theme={theme}
+        style={{ minHeight: '100vh' }}
+      >
+        <div className={headclass}>
+          博客管理系统
+          <Switch
+            checked={theme === 'dark'}
+            onChange={changeTheme}
+            checkedChildren="Dark"
+            unCheckedChildren="Light"
+          />
+        </div>
+        <Menu theme={theme} defaultSelectedKeys={['1']} mode="inline">
           <Menu.Item key="1" icon={<PieChartOutlined />}>
             工作台
           </Menu.Item>
           <Menu.Item key="2" icon={<DesktopOutlined />}>
             添加文章
           </Menu.Item>
-          <SubMenu key="sub1" icon={<UserOutlined />} title="文章管理">
-            <Menu.Item key="3">添加文章</Menu.Item>
-            <Menu.Item key="4">文章列表</Menu.Item>
+          <SubMenu 
+            key="sub1" 
+            icon={<UserOutlined />} 
+            title="文章管理"
+            onClick={handleClickMenu}
+          >
+            <Menu.Item key="addArticle">添加文章</Menu.Item>
+            <Menu.Item key="Articlelist">文章列表</Menu.Item>
           </SubMenu>
           <Menu.Item key="9" icon={<FileOutlined />}>
             留言管理
@@ -50,7 +85,9 @@ const AdminIndex = () => {
           </Breadcrumb>
           <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
             <div>
-              <Route path="/index" exact component={AddArticle} />
+              <Route path="/index/" exact component={AddArticle} />
+              <Route path="/index/add" exact component={AddArticle} />
+              <Route path="/index/list" exact component={ArticleList} />
             </div>
           </div>
         </Content>

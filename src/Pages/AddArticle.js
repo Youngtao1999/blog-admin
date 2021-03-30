@@ -85,7 +85,46 @@ const AddArticle = (props) => {
         message.warning('发布日期不能为空');
         return false;
     }
-    message.success("发布成功")
+    let params = {
+      type_id: selectedType,
+      title: articleTitle,
+      article_content: articleContent,
+      introduce: introduce,
+      addDate: showDate,
+    }
+    // 判断是新增还是修改
+    if(articleId === 0) {
+      // 新增
+      params.view_count = 0;
+      instance({
+        method: "post",
+        url: servicePath.addArticle,
+        data: params,
+        withCredentials: true,
+      }).then(res => {
+        if(res.data.success) {
+          setArticleId(res.data.insertId);
+          message.success("发布成功");
+        }else {
+          message.err("发布失败")
+        }
+      })
+    }else {
+      // 修改
+      params.id = articleId;
+      instance({
+        method: "post",
+        url: servicePath.updateArticle,
+        data: params,
+        withCredentials: true
+      }).then(res => {
+        if(res.data.success) {
+          message.success("更新成功");
+        }else {
+          message.err("更新失败")
+        }
+      })
+    }
   }
 
   return (
@@ -101,7 +140,7 @@ const AddArticle = (props) => {
                 placeholder="博客标题"
                 size="large"
                 value={articleTitle}
-                onChange={(e) => {setArticleTitle(e.target.value)}}
+                onChange={(e) => {setArticleTitle(e.target.value);console.log(articleTitle)}}
               />
             </Col>
           </Row>
@@ -136,7 +175,7 @@ const AddArticle = (props) => {
                 placeholder="发布日期"
                 onChange={(date, dateString) => {setShowDate(dateString)}}
               />
-              <Select placeholder="类型" defaultValue={selectedType} onChange={(value) => {setSelectType(value)}} >
+              <Select placeholder="类型" defaultValue={selectedType} onChange={(value) => {console.log(value);setSelectType(value)}} >
                 {
                   typeInfo.map((item, index) => (
                     <Option value={item.id} key={index}>{item.typeName}</Option>
