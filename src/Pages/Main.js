@@ -10,7 +10,7 @@ const Main = () => {
     <Router>
       <Route path="/" exact render={()=> (<Redirect to="/login"/>)} />
       <Route path="/login" exact component={Login} />
-      <Route path="/index" exact component={AdminIndex} />
+      <Route path="/index" component={AdminIndex} />
     </Router>
   )
 }

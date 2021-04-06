@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react"
 import marked from "marked"
-import axios from "axios"
 import "../static/css/AddArticle.css"
 import { Row, Col, Input, Select, Button, DatePicker, Divider, message } from "antd"
 
@@ -24,6 +23,12 @@ const AddArticle = (props) => {
 
   useEffect(() => {
     getTypeInfo();
+    // 获取文章id
+    let tmpId = props.match.params.id
+    if(tmpId) {
+      setArticleId(tmpId);
+      getArticleById(tmpId);
+    }
   }, [])
 
   marked.setOptions({
@@ -127,6 +132,28 @@ const AddArticle = (props) => {
     }
   }
 
+  // 根据id获取内容
+  const getArticleById = (id) => {
+    const params = {
+      id
+    }
+    instance({
+      method: "get",
+      url: servicePath.getArticleById,
+      params,
+      withCredentials: true
+    }).then(res => {
+      let articleInfo = res.data.data[0];
+      setArticleTitle(articleInfo.title);
+      setArticleContent(articleInfo.article_content);
+      setMarkdownContent(marked(articleInfo.article_content));
+      setIntroduce(articleInfo.introduce);
+      setMarkdownIntro(marked(articleInfo.introduce));
+      setShowDate(articleInfo.addDate);
+      setSelectType(articleInfo.typeId)
+    })
+  }
+
   return (
     <div>
       <Row gutter={5}>
@@ -173,9 +200,15 @@ const AddArticle = (props) => {
             <Col span={24} className="date-select">
               <DatePicker 
                 placeholder="发布日期"
-                onChange={(date, dateString) => {setShowDate(dateString)}}
+                // value={showDate}
+                onChange={(date, dateString) => {setShowDate(dateString);}}
               />
-              <Select placeholder="类型" defaultValue={selectedType} onChange={(value) => {console.log(value);setSelectType(value)}} >
+              <Select 
+                placeholder="类型" 
+                defaultValue={selectedType} 
+                value={selectedType}
+                onChange={(value) => {console.log(value);setSelectType(value)}} 
+              >
                 {
                   typeInfo.map((item, index) => (
                     <Option value={item.id} key={index}>{item.typeName}</Option>
@@ -187,6 +220,7 @@ const AddArticle = (props) => {
               <TextArea
                 rows={8}
                 placeholder="文章简介"
+                value={introduce}
                 onChange={(e) => {changeIntro(e)}}
               />
               <div  className="introduce-html" dangerouslySetInnerHTML={{ __html: markdownIntro }}>

@@ -18,8 +18,9 @@ const AdminIndex = (props) => {
   const { SubMenu } = Menu;
 
   const [collapsed, setCollapsed] = useState(false);
-  const [theme, setTheme] = useState("light");
-  const [headclass, setHeadclass] = useState("head-light");
+  const [theme, setTheme] = useState("light");  // 主题
+  const [headclass, setHeadclass] = useState("head-light"); // 头部样式主题
+  const [breadcrumb, setBreadcrumb] = useState(["工作台"]); // 头部样式主题
 
   const onCollapse = collapsed => {
     setCollapsed(collapsed);
@@ -28,8 +29,10 @@ const AdminIndex = (props) => {
   const handleClickMenu = (e) => {
     if(e.key === "addArticle") {
       props.history.push("/index/add");
+      setBreadcrumb(["文章管理", "添加文章"]);
     } else if(e.key === "Articlelist") {
       props.history.push("/index/list");
+      setBreadcrumb(["文章管理", "文章列表"]);
     }
   }
 
@@ -81,13 +84,18 @@ const AdminIndex = (props) => {
         <Content style={{ margin: '0 16px' }}>
           <Breadcrumb style={{ margin: '16px 0' }}>
             <Breadcrumb.Item>后台管理系统</Breadcrumb.Item>
-            <Breadcrumb.Item>工作台</Breadcrumb.Item>
+            {
+              breadcrumb.map((item, index) => (
+                <Breadcrumb.Item key={index}>{item}</Breadcrumb.Item>
+              ))
+            }
           </Breadcrumb>
           <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
             <div>
               <Route path="/index/" exact component={AddArticle} />
               <Route path="/index/add" exact component={AddArticle} />
               <Route path="/index/list" exact component={ArticleList} />
+              <Route path="/index/add/:id" exact component={AddArticle} />
             </div>
           </div>
         </Content>
