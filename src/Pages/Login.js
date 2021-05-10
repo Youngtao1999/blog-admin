@@ -38,12 +38,12 @@ const Login = (props) => {
       method: "post",
       url: servicePath.login,
       data: loginData,
-      withCredentials: true
+      // withCredentials: true
     }).then(res => {
       if(res.data.success) {
+        message.success("登录成功");
         //  存储 token
         sessionStorage.setItem("token", res.data.token);
-        console.log("token", sessionStorage.getItem("token"));
         props.history.push("/index");
         setIsLoading(false);
         clearTimeout(timer)
@@ -85,11 +85,11 @@ const Login = (props) => {
             onChange={(e) => {setPassword(e.target.value)}}
           />
           <div className="card-item card-button">
-            <Button 
+            {/* <Button 
               type="ghost"
               size="small"
               block
-            >注册</Button>
+            >注册</Button> */}
             <Button 
               type="primary"
               size="small"

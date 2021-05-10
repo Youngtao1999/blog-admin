@@ -1,14 +1,18 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, createContext } from "react"
 import marked from "marked"
-import "../static/css/AddArticle.css"
-import { Row, Col, Input, Select, Button, DatePicker, Divider, message } from "antd"
+import "../../static/css/AddArticle.css"
+import { Row, Col, Input, Select, Drawer, Button, DatePicker, Divider, message, Image } from "antd"
 
-import servicePath from "../config/apiUrl"
-import instance from "../api/axios"
+import { FileImageOutlined } from '@ant-design/icons';
+import UploadImg from "../../compontents/UploadImg"
+import servicePath, { fallback } from "../../config/apiUrl"
+import instance from "../../api/axios"
 
 const AddArticle = (props) => {
   const { Option } = Select;
   const { TextArea } = Input;
+
+  const { Provider } = createContext();
 
   const [articleId,setArticleId] = useState(0);  // 文章的ID，如果是0说明是新增加，如果不是0，说明是修改
   const [articleTitle,setArticleTitle] = useState(''); //文章标题
@@ -19,7 +23,9 @@ const AddArticle = (props) => {
   const [showDate,setShowDate] = useState(); //发布日期
   const [updateDate,setUpdateDate] = useState(); //修改日志的日期
   const [typeInfo ,setTypeInfo] = useState([]); // 文章类别信息
+  const [imgUrl,setImgUrl] = useState(""); // 封面图片地址
   const [selectedType,setSelectType] = useState("选择类型"); //选择的文章类别
+  const [visible,setVisible] = useState(false); // 信息弹框
 
   useEffect(() => {
     getTypeInfo();
@@ -59,16 +65,11 @@ const AddArticle = (props) => {
     instance({
       method: "get",
       url: servicePath.getTypeInfo,
-      withCredentials: true,
+      // withCredentials: true,
     }).then(res => {  // token验证成功
       if(res.data.success) {
         setTypeInfo(res.data.data);
       }
-    }).catch(err => { // token验证失败
-      message.error("用户未登录");
-      setTimeout(() => {
-        props.history.push("/login");
-      }, 2000);
     })
   }
 
@@ -87,8 +88,9 @@ const AddArticle = (props) => {
         message.warning('简介不能为空');
         return false;
     }else if(!showDate){
-        message.warning('发布日期不能为空');
-        return false;
+    }else if(!imgUrl) {
+      message.warning('请上传博客封面');
+      return false;
     }
     let params = {
       type_id: selectedType,
@@ -96,6 +98,7 @@ const AddArticle = (props) => {
       article_content: articleContent,
       introduce: introduce,
       addDate: showDate,
+      image: imgUrl
     }
     // 判断是新增还是修改
     if(articleId === 0) {
@@ -105,11 +108,12 @@ const AddArticle = (props) => {
         method: "post",
         url: servicePath.addArticle,
         data: params,
-        withCredentials: true,
+        // withCredentials: true,
       }).then(res => {
         if(res.data.success) {
           setArticleId(res.data.insertId);
           message.success("发布成功");
+          onClose();
         }else {
           message.err("发布失败")
         }
@@ -121,10 +125,11 @@ const AddArticle = (props) => {
         method: "post",
         url: servicePath.updateArticle,
         data: params,
-        withCredentials: true
+        // withCredentials: true
       }).then(res => {
         if(res.data.success) {
           message.success("更新成功");
+          onClose();
         }else {
           message.err("更新失败")
         }
@@ -141,34 +146,53 @@ const AddArticle = (props) => {
       method: "get",
       url: servicePath.getArticleById,
       params,
-      withCredentials: true
+      // withCredentials: true
     }).then(res => {
       let articleInfo = res.data.data[0];
       setArticleTitle(articleInfo.title);
       setArticleContent(articleInfo.article_content);
       setMarkdownContent(marked(articleInfo.article_content));
       setIntroduce(articleInfo.introduce);
+      setImgUrl(articleInfo.image);
       setMarkdownIntro(marked(articleInfo.introduce));
       setShowDate(articleInfo.addDate);
       setSelectType(articleInfo.typeId)
     })
   }
+  // 关闭弹框
+  const onClose = () => {
+    if(articleId === 0) {
+      setImgUrl("");
+    }
+    setVisible(false);
+  }
+  // 打开弹框
+  const openDrawer = () =>{
+    if(articleId === 0) {
+      setImgUrl("")
+    }
+    setVisible(true);
+  }
+  const imageIcon = (<FileImageOutlined />)
 
   return (
     <div>
       <Row gutter={5}>
         {/* 左侧 */}
-        <Col span={18}>
+        <Col span={24}>
           {/* 左侧头 */}
           <Row gutter={10} className="left-header">
             {/* 标题 */}
-            <Col span={20}>
+            <Col span={6}>
               <Input 
                 placeholder="博客标题"
                 size="large"
                 value={articleTitle}
-                onChange={(e) => {setArticleTitle(e.target.value);console.log(articleTitle)}}
+                onChange={(e) => {setArticleTitle(e.target.value)}}
               />
+            </Col>
+            <Col>
+              <Button type="primary" size="large" onClick={openDrawer}>发布文章</Button>
             </Col>
           </Row>
           {/* 左侧主体 */}
@@ -190,13 +214,32 @@ const AddArticle = (props) => {
             </Col>
           </Row>
         </Col>
-        {/* 右侧 */}
-        <Col span={6}>
+
+        <Drawer
+          // title={isAdd ? "新增类型" : "修改类型"}
+          title={"保存文章"}
+          placement="right"
+          width="400"
+          closable={false}
+          onClose={onClose}
+          visible={visible}
+          footer={
+            <div
+              style={{
+                textAlign: 'right',
+              }}
+            >
+              <Button onClick={onClose} style={{ marginRight: 8 }}>
+                取消
+              </Button>
+              {/* <Button onClick={onConfirm} type="primary"> */}
+              <Button onClick={saveArticle} type="primary">
+                确定
+              </Button>
+            </div>
+          }
+        >
           <Row>
-            <Col span={24} className="right-button">
-              <Button size="large">暂存</Button>
-              <Button type="primary" size="large" onClick={saveArticle}>发布</Button>
-            </Col>
             <Col span={24} className="date-select">
               <DatePicker 
                 placeholder="发布日期"
@@ -207,27 +250,40 @@ const AddArticle = (props) => {
                 placeholder="类型" 
                 defaultValue={selectedType} 
                 value={selectedType}
-                onChange={(value) => {console.log(value);setSelectType(value)}} 
+                onChange={(value) => {setSelectType(value)}} 
               >
                 {
                   typeInfo.map((item, index) => (
-                    <Option value={item.id} key={index}>{item.typeName}</Option>
+                    <Option value={item.id} key={index}>
+                      <span className="icon-span" dangerouslySetInnerHTML={{__html: item.icon}}></span>{item.typeName}
+                    </Option>
                   ))
                 }
               </Select>
             </Col>
+            <Col span={24}>
+              <Provider value="上传封面">
+                <UploadImg setImgUrl={setImgUrl} />
+              </Provider>
+              <Image
+                className="img-url"
+                src={imgUrl}
+                fallback={fallback}
+              />
+            </Col>
             <Col span={24} className="article-intro">
               <TextArea
+                maxLength={150}
                 rows={8}
                 placeholder="文章简介"
                 value={introduce}
                 onChange={(e) => {changeIntro(e)}}
               />
-              <div  className="introduce-html" dangerouslySetInnerHTML={{ __html: markdownIntro }}>
+              <div className="introduce-html" dangerouslySetInnerHTML={{ __html: markdownIntro }}>
               </div>
             </Col>
           </Row>
-        </Col>
+        </Drawer>
       </Row>
     </div>
   )

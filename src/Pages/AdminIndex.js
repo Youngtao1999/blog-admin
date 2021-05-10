@@ -7,9 +7,14 @@ import {
   FileOutlined,
   TeamOutlined,
   UserOutlined,
+  AppstoreOutlined,
+  MailOutlined,
 } from '@ant-design/icons';
-import AddArticle from "./AddArticle"
-import ArticleList from "./ArticleList";
+import ManageInfo from "./content/ManageInfo"
+import AddArticle from "./content/AddArticle"
+import ArticleList from "./content/ArticleList";
+import TypeList from "./content/TypeList";
+import ManageComment from "./content/ManageComment";
 import "../static/css/AdminIndex.css"
 
 
@@ -25,17 +30,32 @@ const AdminIndex = (props) => {
   const onCollapse = collapsed => {
     setCollapsed(collapsed);
   };
-
+  // 信息台
+  const manageInfo = () => {
+    props.history.push("/index");
+    setBreadcrumb(["信息台"]);
+  }
+  // 文章管理点击事件
   const handleClickMenu = (e) => {
     if(e.key === "addArticle") {
-      props.history.push("/index/add");
-      setBreadcrumb(["文章管理", "添加文章"]);
+      props.history.push("/index/addArt");
+      setBreadcrumb(["文章管理", "编写文章"]);
     } else if(e.key === "Articlelist") {
-      props.history.push("/index/list");
+      props.history.push("/index/artList");
       setBreadcrumb(["文章管理", "文章列表"]);
     }
   }
-
+  // 管理文章类型
+  const manageType = () => {
+    props.history.push("/index/typeList");
+    setBreadcrumb(["类型管理"]);
+  }
+  // 管理评论
+  const manageComment = () => {
+    props.history.push("/index/comments");
+    setBreadcrumb(["留言管理"]);
+  }
+  // 修改主题
   const changeTheme = (value) => {
     setTheme(value ? 'dark' : 'light')
     setHeadclass(value ? 'head-dark' : 'head-light')
@@ -60,22 +80,22 @@ const AdminIndex = (props) => {
           />
         </div>
         <Menu theme={theme} defaultSelectedKeys={['1']} mode="inline">
-          <Menu.Item key="1" icon={<PieChartOutlined />}>
-            工作台
-          </Menu.Item>
-          <Menu.Item key="2" icon={<DesktopOutlined />}>
-            添加文章
+          <Menu.Item key="info" icon={<UserOutlined />} onClick={manageInfo}>
+            信息台
           </Menu.Item>
           <SubMenu 
             key="sub1" 
-            icon={<UserOutlined />} 
+            icon={<FileOutlined />} 
             title="文章管理"
             onClick={handleClickMenu}
           >
-            <Menu.Item key="addArticle">添加文章</Menu.Item>
+            <Menu.Item key="addArticle">编写文章</Menu.Item>
             <Menu.Item key="Articlelist">文章列表</Menu.Item>
           </SubMenu>
-          <Menu.Item key="9" icon={<FileOutlined />}>
+          <Menu.Item key="manageType" icon={<AppstoreOutlined />} onClick={manageType}>
+            类型管理
+          </Menu.Item>
+          <Menu.Item key="manageComment" icon={<MailOutlined />} onClick={manageComment}>
             留言管理
           </Menu.Item>
         </Menu>
@@ -92,10 +112,12 @@ const AdminIndex = (props) => {
           </Breadcrumb>
           <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
             <div>
-              <Route path="/index/" exact component={AddArticle} />
-              <Route path="/index/add" exact component={AddArticle} />
-              <Route path="/index/list" exact component={ArticleList} />
+              <Route path="/index/" exact component={ManageInfo} />
+              <Route path="/index/addArt" exact component={AddArticle} />
               <Route path="/index/add/:id" exact component={AddArticle} />
+              <Route path="/index/artList" exact component={ArticleList} />
+              <Route path="/index/typeList" exact component={TypeList} />
+              <Route path="/index/comments" exact component={ManageComment} />
             </div>
           </div>
         </Content>

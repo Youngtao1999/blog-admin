@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react"
-import { List, Table, Row, Col, Modal, message, Button } from "antd"
+import { Table, Modal, message, Button, Input, Image } from "antd"
 
-import instance from "../api/axios"
-import servicePath from "../config/apiUrl"
+import "../../static/css/ArticleList.css"
+import instance from "../../api/axios"
+import servicePath from "../../config/apiUrl"
 
 
 const ArticleList = (props) => {
   const { confirm } = Modal;
+  const { Search } = Input;
 
   const [list, setList] = useState([]);
+  const [title, setTitle] = useState("");
   const columns = [
     {
       title: "标题",
@@ -31,6 +34,19 @@ const ArticleList = (props) => {
       key: "view_count",
     },
     {
+      title: "封面",
+      dataIndex: "image",
+      key: "image",
+      render: image => (
+        <div>
+          <Image
+            className="list-image"
+            src={image}
+          />
+        </div>
+      )
+    },
+    {
       title: '操作',
       key: 'action',
       render: (text, record) => (
@@ -47,15 +63,16 @@ const ArticleList = (props) => {
   ]
 
   useEffect(() => {
-    getList();
+    getList(title);
   }, [])
 
   // 获取列表
-  const getList = () => {
+  const getList = (title) => {
     instance({
       method: "get",
+      params: {title},
       url: servicePath.getArticleList,
-      withCredentials: true
+      // withCredentials: true
     }).then(res => {
       const list = res.data.list;
       // list.forEach((item, index) =>{
@@ -80,9 +97,9 @@ const ArticleList = (props) => {
           method: "get",
           url: servicePath.delArticle,
           params,
-          withCredentials: true
+          // withCredentials: true
         }).then(res => {
-          getList();
+          getList(title);
           message.success("删除成功");
         })
       },
@@ -101,15 +118,29 @@ const ArticleList = (props) => {
       method: "get",
       url: servicePath.getArticleById,
       params,
-      withCredentials: true
+      // withCredentials: true
     })
+  }
+  // 搜索文章
+  const onSearch = (value) => {
+    setTitle(value);
+    getList(value);
   }
 
   return (
     <div>
+      <Search
+        className="search-input"
+        placeholder="请输入标题"
+        allowClear
+        enterButton="搜索"
+        size="middle"
+        onSearch={onSearch}
+      />
       <Table 
         dataSource={list}
         columns={columns}
+        pagination={{defaultPageSize: 6}}
       />
     </div>
   )

@@ -4,6 +4,7 @@ import "antd/dist/antd.css"
 
 import Login from "./Login"
 import AdminIndex from "./AdminIndex"
+import UploadImg from "../compontents/UploadImg"
 
 const Main = () => {
   return (
@@ -11,6 +12,7 @@ const Main = () => {
       <Route path="/" exact render={()=> (<Redirect to="/login"/>)} />
       <Route path="/login" exact component={Login} />
       <Route path="/index" component={AdminIndex} />
+      <Route path="/upload" component={UploadImg} />
     </Router>
   )
 }
